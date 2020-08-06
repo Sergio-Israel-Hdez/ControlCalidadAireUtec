@@ -1,0 +1,78 @@
+﻿@model ControlCalidadAireUtec.Models.BD.Usuarios
+@{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/_LayoutMaster.cshtml";
+}
+<br />
+<div class="row row-no-gutters">
+    <div class="col-xs-6">
+        <div class="panel panel-default">
+            <div class="panel-heading">Información de usuario</div>
+            <div class="panel-body" style="height:160px;">
+                <form class="form-inline">
+                    <fieldset>
+                        <div class="form-group text-center">
+                            <label for="exampleInputName2">Nombre</label>
+                            <input type="text" class="form-control" id="exampleInputName2" value="@Model.Nombre @Model.Apellidos" disabled>
+                        </div>
+                        <div class="form-group">
+                            <label for="exampleInputEmail2">Email</label>
+                            <input type="email" class="form-control" id="exampleInputEmail2" value="@Model.Email" disabled>
+                        </div>
+                    </fieldset>
+                    <br />
+                    <fieldset>
+                        <div class="form-group">
+                            <label for="exampleInputName2">Telefono</label>
+                            <input type="text" class="form-control" id="exampleInputName2" value="@Model.Telefono" disabled>
+                        </div>
+                        <div class="form-group">
+                            <label for="exampleInputEmail2">Rol</label>
+                            <input type="email" class="form-control" id="exampleInputEmail2" value="Master" disabled>
+                        </div>
+                    </fieldset>
+                </form>
+            </div>
+        </div>
+    </div>
+    <div class="col-xs-6">
+        <div class="panel panel-default">
+            <div class="panel-heading">Información general del sistema</div>
+            <div class="panel-body" style="overflow-y:scroll; height:160px;">
+                <form class="form-inline">
+                    <ul class="list-group">
+                        <li class="list-group-item active">
+                            <span class="badge">@ViewBag.cantEstacionesActivas</span>
+                            Estaciones Activas
+                        </li>
+                        <li class="list-group-item danger">
+                            <span class="badge">@ViewBag.cantEstacionesInactivas</span>
+                            Estaciones Inactivas
+                        </li>
+                    </ul>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="dropdown-divider"></div>
+<div class="row row-no-gutters">
+    <div class="col-xs-6">
+        <div class="thumbnail">
+            <img src="~/Content/Images/administracion.png">
+            <div class="caption text-center">
+                <h4>Administrar Usuarios</h4>
+                @Html.ActionLink("Ir", "AdministrarUsuarios", "Master", null, new { @class = "btn btn-primary btn-lg btn-block" })
+            </div>
+        </div>
+    </div>
+    <div class="col-xs-6">
+        <div class="thumbnail">
+            <img src="~/Content/Images/sensor.png">
+            <div class="caption text-center">
+                <h4>Administrar Estaciones de Monitoreo</h4>
+                @Html.ActionLink("Ir", "AdministrarEstaciones", "Master", null, new { @class = "btn btn-primary btn-lg btn-block" })
+            </div>
+        </div>
+    </div>
+</div>

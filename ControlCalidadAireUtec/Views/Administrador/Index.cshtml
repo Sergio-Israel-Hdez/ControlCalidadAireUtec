@@ -1,0 +1,108 @@
+﻿@using PagedList.Mvc;
+@using PagedList;
+@{
+    ViewBag.Title = "Administrador";
+    Layout = "~/Views/Shared/_LayoutAdmin.cshtml";
+}
+
+<h2>Inicio Administrador</h2>
+
+<div class="row">
+    <div class="col-sm-6 text-left">
+        <div class="text-left form-inline">
+            @Html.ActionLink("Agregar Estación de Monitoreo", "AgregarGoogleSheet", "Administrador", null, new { @class = "btn btn-default" })
+        </div>
+    </div>
+    <div class="col-sm-6 text-right">
+        <div class="text-righ form-inline">
+            <form method="get" action=@Url.Action("Index","Administrador")>
+                <div class="btn-group" role="group">
+                    @Html.TextBox("nombreestacion", null, new
+                    {
+                        placeholder = "Buscar Estación",
+                        @class = "form-control btn-group"
+                    })
+                    <button class="btn btn-default" type="submit">Buscar</button>
+                    <button class="btn btn-default dropdown-toggle" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+                        Ordenar por
+                        <span class="caret"></span>
+                    </button>
+                    <ul class="dropdown-menu" aria-labelledby="dropdownMenu1">
+                        <li> @Html.ActionLink("Nombre", "Index", new { orden = ViewBag.ordennombre })</li>
+                        <li role="separator" class="divider"></li>
+                        <li>@Html.ActionLink("Registro", "Index", new { orden = ViewBag.ordenid })</li>
+                    </ul>
+                </div>
+                
+            </form>
+        </div>
+    </div>
+</div>
+<hr />
+<div class="row">
+    @{
+        foreach (var item in ViewBag.Mysheets as IEnumerable<ControlCalidadAireUtec.Models.BD.SP_ListaGoogleSheetsAdmin_Result>)
+        {
+            <div class="col-sm-6 col-md-4">
+                <div class="thumbnail">
+                    <div class="caption">           
+                        <h3>@item.Censor</h3>
+                        <p>
+                            @Html.ActionLink("Modificar", "ModificarGoogleSheet", new { idsheet = item.id }, htmlAttributes: new { @class = "btn btn-default" })
+                            @Html.ActionLink("Detalle", "DetalleGoogleSheet", new { idsheet = item.id }, htmlAttributes: new { @class = "btn btn-info" })
+
+                            @Html.ActionLink("Eliminar", "EliminarGoogleSheet", new { idsheet = item.id }, htmlAttributes: new { @class = "btn btn-danger", onclick = "return confirm('¿Esta seguro de eliminar?');" })
+                        </p>
+                    </div>
+                </div>
+            </div>
+        }
+    }
+</div>
+<hr />
+<div style="float: left">
+    Página @(ViewBag.Mysheets.PageCount < ViewBag.Mysheets.PageNumber ? 0 : ViewBag.Mysheets.PageNumber) de @ViewBag.Mysheets.PageCount
+</div>
+<br />
+<div class="justify-content-center">
+    @Html.PagedListPager((IPagedList)ViewBag.Mysheets, paginaEstaciones => Url.Action("Index", new { paginaEstaciones }))
+</div>
+
+<link href="~/Content/toastr.css" rel="stylesheet" />
+@section scripts{
+    <script src="~/Scripts/toastr.js"></script>
+    <script>
+        $(function () {
+            toastr.options = {
+                "closeButton": true,
+                "debug": false,
+                "newestOnTop": false,
+                "progressBar": true,
+                "positionClass": "toast-bottom-left",
+                "preventDuplicates": false,
+                "onclick": false,
+                "showDuration": "300",
+                "hideDuration": "1000",
+                "timeOut": "5000",
+                "extendedTimeOut": "1000",
+                "showEasing": "swing",
+                "hideEasing": "linear",
+                "showMethod": "fadeIn",
+                "hideMethod":"fadeOut"
+            }
+            var a = '@TempData["msgAdmin"]';
+            if (a == "1") {
+                toastr.success("Estación modificada satifactoriamente", "Información");
+            }
+            if (a == "2") {
+                toastr.error("Sucedio un error", "Error");
+            }
+            if (a=="3") {
+                toastr.success("Estación fue agregrado satifactoriamente", "Información");
+            }
+            if (a == "4") {
+                toastr.warning("Estación eliminada satifactoriamente","Información")
+            }
+    })
+    </script>
+}

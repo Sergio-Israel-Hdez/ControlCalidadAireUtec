@@ -1,0 +1,40 @@
+﻿@model ControlCalidadAireUtec.Models.BD.SP_DetalleUsuario_Result
+
+@{
+    ViewBag.Title = "Detalle Usuario";
+    Layout = "~/Views/Shared/_LayoutMaster.cshtml";
+}
+
+<h2>Detalle</h2>
+
+<div>
+    <h4>Usuario</h4>
+    <hr />
+    <ul class="list-group">
+        <li class="list-group-item  list-group-item-info">Nombres</li>
+        <li class="list-group-item">@Html.DisplayFor(model => model.Nombre)</li>
+        <li class="list-group-item  list-group-item-info">Apellidos</li>
+        <li class="list-group-item">@Html.DisplayFor(model => model.Apellidos)</li>
+        <li class="list-group-item  list-group-item-info">Email</li>
+        <li class="list-group-item">@Html.DisplayFor(model => model.Email)</li>
+        <li class="list-group-item  list-group-item-info">Telefono</li>
+        <li class="list-group-item">@Html.DisplayFor(model => model.Telefono)</li>
+        <li class="list-group-item  list-group-item-info">Estado</li>
+        <li class="list-group-item">
+            @{
+                if (Model.Estado == 1)
+                {
+                    <span>Activo</span>
+                }
+                else
+                {
+                    <span>Inactivo</span>
+                }
+            }
+        </li>
+    </ul>
+</div>
+<p>
+    @Html.ActionLink("Modificar", "ModificarUsuarioMaster", new { idusuario = Model.id }) |
+    @Html.ActionLink("Regresar", "AdministrarUsuarios", "Master", null, new { @class = "btn btn-default" })
+</p>

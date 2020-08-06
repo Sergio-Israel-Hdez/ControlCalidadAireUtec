@@ -1,0 +1,105 @@
+﻿@using Google.Apis.Sheets.v4;
+@using Google.Apis.Services;
+@using ControlCalidadAireUtec.Models;
+@using System.Linq;
+
+@{
+    ViewBag.ListaCensores = Model;
+}
+<a name="inicio"></a>
+<div class="text-center">
+    <div style="width: 100%;height: 500px;" id="mapid"></div>
+
+    <script type="text/javascript">
+
+        //tomamos la latitud y longitud del modelo
+
+        var mymap = L.map('mapid').setView([13.49647, -88.90137], 8.9);
+        L.tileLayer('https://api.mapbox.com/styles/v1/{id}/tiles/{z}/{x}/{y}?access_token=pk.eyJ1IjoibWFwYm94IiwiYSI6ImNpejY4NXVycTA2emYycXBndHRqcmZ3N3gifQ.rJcFIG214AriISLbB6B5aw', {
+            maxZoom: 18,
+            minZoom:0,
+            id: 'mapbox/streets-v11',
+            tileSize: 512,
+            zoomOffset: -1
+        }).addTo(mymap);
+        @foreach (var row in ViewBag.ListaCensores as IEnumerable<ControlCalidadAireUtec.Models.BD.Sheets>)
+        {
+            @*@:L.marker([@row.latitud, @row.longitud]).addTo(mymap).bindPopup("Ver @row.nombre<br><a class='btn btn-default' href='#@row.id'>Ir</a>");*@
+        string[] Scopes = { SheetsService.Scope.SpreadsheetsReadonly };
+        string AplicationName = "Google Sheets API .NET Quickstart";
+        string spredsheetId = row.s_key;
+        var service = new SheetsService(new BaseClientService.Initializer()
+        {
+            ApplicationName = AplicationName,
+            ApiKey = "AIzaSyCUhw_JcXMHOYVKEIGd4NWQlTZChLZBLA8",
+        });
+        var range = $"datalogger!A4:E";
+        SpreadsheetsResource.ValuesResource.GetRequest request =
+            service.Spreadsheets.Values.Get(spredsheetId, range);
+        var response = request.Execute();
+        IList<IList<Object>> values = response.Values;
+        if (values != null)
+        {
+            //listado para mostrar el ultimo registro para poder mostrarlo en el mapa
+            ViewBag.censorDataMap = values.Select(x => new CensoresModel() { id = x[0].ToString(), fecha = x[1].ToString(), pm_2_5 = x[2].ToString(), pm_10 = x[3].ToString(), temp = x[4].ToString() }).OrderByDescending(x => x.id.Length).ThenByDescending(x => x.id).Take(1);
+        }
+        //desconponemos los datos para moder colocarlo en el codigo del mapa
+        foreach (var rowM in ViewBag.censorDataMap)
+        {
+            ViewBag.fechaCensor = rowM.fecha;
+            ViewBag.pm_2_5Censor = rowM.pm_2_5;
+            ViewBag.pm_10Censor = rowM.pm_10;
+            ViewBag.tempCensor = rowM.temp;
+        }
+        int pm_2_5;
+        System.Int32.TryParse(ViewBag.pm_2_5Censor, out pm_2_5);
+            if (pm_2_5<0 || pm_2_5==0)
+            {
+                @:L.circle([@row.latitud, @row.longitud], {
+                @:color: 'blue',
+                    @:fillColor: 'blue',
+                    @:fillOpacity: 0.5,
+                    @:radius: 5000
+                    @:}).addTo(mymap).bindPopup("<span class='alert alert-danger'>Estacion @row.nombre caida</span>");
+
+            }
+            if (pm_2_5 > 0 && pm_2_5 < 15.3)
+            {
+                @:L.circle([@row.latitud, @row.longitud], {
+                @:color: 'green',
+                    @:fillColor: '#24B300',
+                    @:fillOpacity: 0.5,
+                    @:radius: 5000
+                    @:}).addTo(mymap).bindPopup("@row.nombre</br>Calidad: Buena</br>PM 2.5: @ViewBag.pm_2_5Censor (ug/m3)</br>PM 10: @ViewBag.pm_10Censor (ug/m3)</br>Temperatura C°: @ViewBag.tempCensor</br><a href='/Home/DetalleSensor?idsheet=@row.id' class='btn btn-default text-success'>Detalle</a>");
+
+            }
+            if (pm_2_5 > 15.5 && pm_2_5 < 40.2)
+            {
+                @:L.circle([@row.latitud, @row.longitud], {
+                @:color: 'yellow',
+                    @:fillColor: '#FFCD00',
+                    @:fillOpacity: 0.5,
+                    @:radius: 5000
+                    @:}).addTo(mymap).bindPopup("@row.nombre</br>Calidad: Satifactoria</br>PM 2.5: @ViewBag.pm_2_5Censor (ug/m3)</br>PM 10: @ViewBag.pm_10Censor (ug/m3)</br>Temperatura C°: @ViewBag.tempCensor</br><a href='/Home/DetalleSensor?idsheet=@row.id' class='btn btn-default text-success'>Detalle</a>");
+            }
+            if (pm_2_5 > 45.5 && pm_2_5 < 65.4)
+            {
+                @:L.circle([@row.latitud, @row.longitud], {
+                @:color: 'orange',
+                    @:fillColor: '#FF4D00',
+                    @:fillOpacity: 0.5,
+                    @:radius: 5000
+                    @:}).addTo(mymap).bindPopup("@row.nombre</br>Calidad: No satifactoria</br>PM 2.5: @ViewBag.pm_2_5Censor (ug/m3)</br>PM 10: @ViewBag.pm_10Censor (ug/m3)</br>Temperatura C°: @ViewBag.tempCensor</br><a href='/Home/DetalleSensor?idsheet=@row.id'  class='btn btn-default text-success'>Detalle</a>");
+            }
+            if (pm_2_5 > 66 && pm_2_5 < 159)
+            {
+                @:L.circle([@row.latitud, @row.longitud], {
+                @:color: 'red',
+                    @:fillColor: '#f03',
+                    @:fillOpacity: 0.5,
+                    @:radius: 5000
+                    @:}).addTo(mymap).bindPopup("@row.nombre</br>Calidad: Dañina</br>PM 2.5: @ViewBag.pm_2_5Censor</br>PM 10: @ViewBag.pm_10Censor</br>Temperatura C°: @ViewBag.tempCensor</br><a href='/Home/DetalleSensor?idsheet=@row.id'  class='btn btn-default text-success'>Detalle</a>");
+            }
+        }
+    </script>
+</div>

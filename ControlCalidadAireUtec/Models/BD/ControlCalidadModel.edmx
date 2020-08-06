@@ -1,0 +1,383 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="3.0" xmlns:edmx="http://schemas.microsoft.com/ado/2009/11/edmx">
+  <!-- EF Runtime content -->
+  <edmx:Runtime>
+    <!-- SSDL content -->
+    <edmx:StorageModels>
+      <Schema Namespace="ControlAireModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012.Azure" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+        <EntityType Name="Sheets">
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Name="id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="nombre" Type="varchar" MaxLength="100" />
+          <Property Name="latitud" Type="varchar" MaxLength="50" />
+          <Property Name="longitud" Type="varchar" MaxLength="50" />
+          <Property Name="s_key" Type="varchar(max)" />
+          <Property Name="idUser" Type="int" />
+          <Property Name="Estado" Type="int" />
+        </EntityType>
+        <EntityType Name="Usuarios">
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Name="id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="Nombre" Type="varchar" MaxLength="100" />
+          <Property Name="Apellidos" Type="varchar" MaxLength="100" />
+          <Property Name="Email" Type="varchar" MaxLength="100" />
+          <Property Name="Password" Type="varbinary" MaxLength="500" />
+          <Property Name="Telefono" Type="varchar" MaxLength="11" />
+          <Property Name="Estado" Type="int" />
+          <Property Name="Rol" Type="int" Nullable="false" />
+        </EntityType>
+        <Association Name="FK__Sheets__idUser__173876EA">
+          <End Role="Usuarios" Type="Self.Usuarios" Multiplicity="0..1" />
+          <End Role="Sheets" Type="Self.Sheets" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Usuarios">
+              <PropertyRef Name="id" />
+            </Principal>
+            <Dependent Role="Sheets">
+              <PropertyRef Name="idUser" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Function Name="fn_desencrip" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="true" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo" ReturnType="varchar">
+          <Parameter Name="clave" Type="varbinary" Mode="In" />
+        </Function>
+        <Function Name="fn_encrip" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="true" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo" ReturnType="varbinary">
+          <Parameter Name="clave" Type="varchar" Mode="In" />
+        </Function>
+        <Function Name="SP_AgregarGoogleSheets" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="nombre" Type="varchar" Mode="In" />
+          <Parameter Name="lat" Type="varchar" Mode="In" />
+          <Parameter Name="lon" Type="varchar" Mode="In" />
+          <Parameter Name="key" Type="varchar(max)" Mode="In" />
+          <Parameter Name="iduser" Type="int" Mode="In" />
+        </Function>
+        <Function Name="SP_AgregarUsuario" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="nombre" Type="varchar" Mode="In" />
+          <Parameter Name="apellido" Type="varchar" Mode="In" />
+          <Parameter Name="email" Type="varchar" Mode="In" />
+          <Parameter Name="pass" Type="varchar" Mode="In" />
+          <Parameter Name="tel" Type="varchar" Mode="In" />
+          <Parameter Name="rol" Type="int" Mode="In" />
+        </Function>
+        <Function Name="SP_DetalleUsuario" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="idusuario" Type="int" Mode="In" />
+        </Function>
+        <Function Name="SP_EliminarAdministrador" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="idusuario" Type="int" Mode="In" />
+        </Function>
+        <Function Name="SP_EliminarGoogleSheets" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="idsheet" Type="int" Mode="In" />
+        </Function>
+        <Function Name="SP_ListaGoogleSheets" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="estado" Type="int" Mode="In" />
+        </Function>
+        <Function Name="SP_ListaGoogleSheetsAdmin" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="id" Type="int" Mode="In" />
+          <Parameter Name="estado" Type="int" Mode="In" />
+        </Function>
+        <Function Name="SP_ListaGoogleSheetsMaster" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="estado" Type="int" Mode="In" />
+        </Function>
+        <Function Name="SP_ModificarGoogleSheets" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="id" Type="int" Mode="In" />
+          <Parameter Name="nombre" Type="varchar" Mode="In" />
+          <Parameter Name="s_key" Type="varchar(max)" Mode="In" />
+          <Parameter Name="lat" Type="varchar" Mode="In" />
+          <Parameter Name="long" Type="varchar" Mode="In" />
+          <Parameter Name="Estado" Type="int" Mode="In" />
+        </Function>
+        <Function Name="SP_ModificarUsuario" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="id" Type="int" Mode="In" />
+          <Parameter Name="nombre" Type="varchar" Mode="In" />
+          <Parameter Name="apellido" Type="varchar" Mode="In" />
+          <Parameter Name="email" Type="varchar" Mode="In" />
+          <Parameter Name="pass" Type="varchar" Mode="In" />
+          <Parameter Name="Telefono" Type="varchar" Mode="In" />
+          <Parameter Name="Estado" Type="int" Mode="In" />
+        </Function>
+        <Function Name="SP_Validar" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="email" Type="varchar" Mode="In" />
+          <Parameter Name="pass" Type="varchar" Mode="In" />
+        </Function>
+        <EntityContainer Name="ControlAireModelStoreContainer">
+          <EntitySet Name="Sheets" EntityType="Self.Sheets" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Usuarios" EntityType="Self.Usuarios" Schema="dbo" store:Type="Tables" />
+          <AssociationSet Name="FK__Sheets__idUser__173876EA" Association="Self.FK__Sheets__idUser__173876EA">
+            <End Role="Usuarios" EntitySet="Usuarios" />
+            <End Role="Sheets" EntitySet="Sheets" />
+          </AssociationSet>
+        </EntityContainer>
+      </Schema>
+    </edmx:StorageModels>
+    <!-- CSDL content -->
+    <edmx:ConceptualModels>
+      <Schema Namespace="ControlAireModel" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
+        <EntityType Name="Sheets">
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Name="id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="nombre" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
+          <Property Name="latitud" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="longitud" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="s_key" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
+          <Property Name="idUser" Type="Int32" />
+          <Property Name="Estado" Type="Int32" />
+          <NavigationProperty Name="Usuarios" Relationship="Self.FK__Sheets__idUser__173876EA" FromRole="Sheets" ToRole="Usuarios" />
+        </EntityType>
+        <EntityType Name="Usuarios">
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Name="id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Nombre" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
+          <Property Name="Apellidos" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
+          <Property Name="Email" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
+          <Property Name="Password" Type="Binary" MaxLength="500" FixedLength="false" />
+          <Property Name="Telefono" Type="String" MaxLength="11" FixedLength="false" Unicode="false" />
+          <Property Name="Estado" Type="Int32" />
+          <Property Name="Rol" Type="Int32" Nullable="false" />
+          <NavigationProperty Name="Sheets" Relationship="Self.FK__Sheets__idUser__173876EA" FromRole="Usuarios" ToRole="Sheets" />
+        </EntityType>
+        <Association Name="FK__Sheets__idUser__173876EA">
+          <End Role="Usuarios" Type="Self.Usuarios" Multiplicity="0..1" />
+          <End Role="Sheets" Type="Self.Sheets" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Usuarios">
+              <PropertyRef Name="id" />
+            </Principal>
+            <Dependent Role="Sheets">
+              <PropertyRef Name="idUser" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityContainer Name="ControlAireContext" annotation:LazyLoadingEnabled="true">
+          <EntitySet Name="Sheets" EntityType="Self.Sheets" />
+          <EntitySet Name="Usuarios" EntityType="Self.Usuarios" />
+          <AssociationSet Name="FK__Sheets__idUser__173876EA" Association="Self.FK__Sheets__idUser__173876EA">
+            <End Role="Usuarios" EntitySet="Usuarios" />
+            <End Role="Sheets" EntitySet="Sheets" />
+          </AssociationSet>
+          <FunctionImport Name="SP_AgregarGoogleSheets" ReturnType="Collection(Decimal)">
+            <Parameter Name="nombre" Mode="In" Type="String" />
+            <Parameter Name="lat" Mode="In" Type="String" />
+            <Parameter Name="lon" Mode="In" Type="String" />
+            <Parameter Name="key" Mode="In" Type="String" />
+            <Parameter Name="iduser" Mode="In" Type="Int32" />
+          </FunctionImport>
+          <FunctionImport Name="SP_AgregarUsuario" ReturnType="Collection(Decimal)">
+            <Parameter Name="nombre" Mode="In" Type="String" />
+            <Parameter Name="apellido" Mode="In" Type="String" />
+            <Parameter Name="email" Mode="In" Type="String" />
+            <Parameter Name="pass" Mode="In" Type="String" />
+            <Parameter Name="tel" Mode="In" Type="String" />
+            <Parameter Name="rol" Mode="In" Type="Int32" />
+          </FunctionImport>
+          <FunctionImport Name="SP_DetalleUsuario" ReturnType="Collection(ControlAireModel.SP_DetalleUsuario_Result)">
+            <Parameter Name="idusuario" Mode="In" Type="Int32" />
+          </FunctionImport>
+          <FunctionImport Name="SP_EliminarAdministrador">
+            <Parameter Name="idusuario" Mode="In" Type="Int32" />
+          </FunctionImport>
+          <FunctionImport Name="SP_EliminarGoogleSheets" ReturnType="Collection(Int32)">
+            <Parameter Name="idsheet" Mode="In" Type="Int32" />
+          </FunctionImport>
+          <FunctionImport Name="SP_ListaGoogleSheets" ReturnType="Collection(ControlAireModel.SP_ListaGoogleSheets_Result)">
+            <Parameter Name="estado" Mode="In" Type="Int32" />
+          </FunctionImport>
+          <FunctionImport Name="SP_ListaGoogleSheetsAdmin" ReturnType="Collection(ControlAireModel.SP_ListaGoogleSheetsAdmin_Result)">
+            <Parameter Name="id" Mode="In" Type="Int32" />
+            <Parameter Name="estado" Mode="In" Type="Int32" />
+          </FunctionImport>
+          <FunctionImport Name="SP_ListaGoogleSheetsMaster" ReturnType="Collection(ControlAireModel.SP_ListaGoogleSheetsMaster_Result)">
+            <Parameter Name="estado" Mode="In" Type="Int32" />
+          </FunctionImport>
+          <FunctionImport Name="SP_ModificarGoogleSheets" ReturnType="Collection(Int32)">
+            <Parameter Name="id" Mode="In" Type="Int32" />
+            <Parameter Name="nombre" Mode="In" Type="String" />
+            <Parameter Name="s_key" Mode="In" Type="String" />
+            <Parameter Name="lat" Mode="In" Type="String" />
+            <Parameter Name="long" Mode="In" Type="String" />
+            <Parameter Name="Estado" Mode="In" Type="Int32" />
+          </FunctionImport>
+          <FunctionImport Name="SP_ModificarUsuario">
+            <Parameter Name="id" Mode="In" Type="Int32" />
+            <Parameter Name="nombre" Mode="In" Type="String" />
+            <Parameter Name="apellido" Mode="In" Type="String" />
+            <Parameter Name="email" Mode="In" Type="String" />
+            <Parameter Name="pass" Mode="In" Type="String" />
+            <Parameter Name="Telefono" Mode="In" Type="String" />
+            <Parameter Name="Estado" Mode="In" Type="Int32" />
+          </FunctionImport>
+          <FunctionImport Name="SP_Validar" ReturnType="Collection(ControlAireModel.SP_Validar_Result)">
+            <Parameter Name="email" Mode="In" Type="String" />
+            <Parameter Name="pass" Mode="In" Type="String" />
+          </FunctionImport>
+        </EntityContainer>
+        <ComplexType Name="SP_DetalleUsuario_Result">
+          <Property Type="Int32" Name="id" Nullable="false" />
+          <Property Type="String" Name="Nombre" Nullable="true" MaxLength="100" />
+          <Property Type="String" Name="Apellidos" Nullable="true" MaxLength="100" />
+          <Property Type="String" Name="Email" Nullable="true" MaxLength="100" />
+          <Property Type="String" Name="Password" Nullable="true" MaxLength="100" />
+          <Property Type="String" Name="Telefono" Nullable="true" MaxLength="11" />
+          <Property Type="Int32" Name="Estado" Nullable="true" />
+          <Property Type="Int32" Name="Rol" Nullable="false" />
+        </ComplexType>
+        <ComplexType Name="SP_ListaGoogleSheets_Result">
+          <Property Type="Int32" Name="id" Nullable="false" />
+          <Property Type="String" Name="Nombre" Nullable="true" MaxLength="201" />
+          <Property Type="String" Name="Censor" Nullable="true" MaxLength="100" />
+          <Property Type="String" Name="llave" Nullable="true" />
+          <Property Type="String" Name="latitud" Nullable="true" MaxLength="50" />
+          <Property Type="String" Name="longitud" Nullable="true" MaxLength="50" />
+        </ComplexType>
+        <ComplexType Name="SP_ListaGoogleSheetsAdmin_Result">
+          <Property Type="Int32" Name="id" Nullable="false" />
+          <Property Type="String" Name="Nombre" Nullable="true" MaxLength="201" />
+          <Property Type="String" Name="Censor" Nullable="true" MaxLength="100" />
+          <Property Type="String" Name="llave" Nullable="true" />
+        </ComplexType>
+        <ComplexType Name="SP_ListaGoogleSheetsMaster_Result">
+          <Property Type="Int32" Name="id" Nullable="false" />
+          <Property Type="String" Name="Nombre" Nullable="true" MaxLength="201" />
+          <Property Type="String" Name="Censor" Nullable="true" MaxLength="100" />
+          <Property Type="String" Name="llave" Nullable="true" />
+          <Property Type="Int32" Name="Estado" Nullable="true" />
+        </ComplexType>
+        <ComplexType Name="SP_Validar_Result">
+          <Property Type="Int32" Name="id" Nullable="false" />
+          <Property Type="String" Name="Nombre" Nullable="true" MaxLength="100" />
+          <Property Type="String" Name="Apellidos" Nullable="true" MaxLength="100" />
+          <Property Type="String" Name="Email" Nullable="true" MaxLength="100" />
+          <Property Type="String" Name="Password" Nullable="true" MaxLength="100" />
+          <Property Type="Int32" Name="Estado" Nullable="true" />
+          <Property Type="Int32" Name="Rol" Nullable="false" />
+        </ComplexType>
+      </Schema>
+    </edmx:ConceptualModels>
+    <!-- C-S mapping content -->
+    <edmx:Mappings>
+      <Mapping Space="C-S" xmlns="http://schemas.microsoft.com/ado/2009/11/mapping/cs">
+        <EntityContainerMapping StorageEntityContainer="ControlAireModelStoreContainer" CdmEntityContainer="ControlAireContext">
+          <EntitySetMapping Name="Sheets">
+            <EntityTypeMapping TypeName="ControlAireModel.Sheets">
+              <MappingFragment StoreEntitySet="Sheets">
+                <ScalarProperty Name="id" ColumnName="id" />
+                <ScalarProperty Name="nombre" ColumnName="nombre" />
+                <ScalarProperty Name="latitud" ColumnName="latitud" />
+                <ScalarProperty Name="longitud" ColumnName="longitud" />
+                <ScalarProperty Name="s_key" ColumnName="s_key" />
+                <ScalarProperty Name="idUser" ColumnName="idUser" />
+                <ScalarProperty Name="Estado" ColumnName="Estado" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Usuarios">
+            <EntityTypeMapping TypeName="ControlAireModel.Usuarios">
+              <MappingFragment StoreEntitySet="Usuarios">
+                <ScalarProperty Name="id" ColumnName="id" />
+                <ScalarProperty Name="Nombre" ColumnName="Nombre" />
+                <ScalarProperty Name="Apellidos" ColumnName="Apellidos" />
+                <ScalarProperty Name="Email" ColumnName="Email" />
+                <ScalarProperty Name="Password" ColumnName="Password" />
+                <ScalarProperty Name="Telefono" ColumnName="Telefono" />
+                <ScalarProperty Name="Estado" ColumnName="Estado" />
+                <ScalarProperty Name="Rol" ColumnName="Rol" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <FunctionImportMapping FunctionImportName="SP_AgregarGoogleSheets" FunctionName="ControlAireModel.Store.SP_AgregarGoogleSheets" />
+          <FunctionImportMapping FunctionImportName="SP_AgregarUsuario" FunctionName="ControlAireModel.Store.SP_AgregarUsuario" />
+          <FunctionImportMapping FunctionImportName="SP_DetalleUsuario" FunctionName="ControlAireModel.Store.SP_DetalleUsuario">
+            <ResultMapping>
+              <ComplexTypeMapping TypeName="ControlAireModel.SP_DetalleUsuario_Result">
+                <ScalarProperty Name="id" ColumnName="id" />
+                <ScalarProperty Name="Nombre" ColumnName="Nombre" />
+                <ScalarProperty Name="Apellidos" ColumnName="Apellidos" />
+                <ScalarProperty Name="Email" ColumnName="Email" />
+                <ScalarProperty Name="Password" ColumnName="Password" />
+                <ScalarProperty Name="Telefono" ColumnName="Telefono" />
+                <ScalarProperty Name="Estado" ColumnName="Estado" />
+                <ScalarProperty Name="Rol" ColumnName="Rol" />
+              </ComplexTypeMapping>
+            </ResultMapping>
+          </FunctionImportMapping>
+          <FunctionImportMapping FunctionImportName="SP_EliminarAdministrador" FunctionName="ControlAireModel.Store.SP_EliminarAdministrador" />
+          <FunctionImportMapping FunctionImportName="SP_EliminarGoogleSheets" FunctionName="ControlAireModel.Store.SP_EliminarGoogleSheets" />
+          <FunctionImportMapping FunctionImportName="SP_ListaGoogleSheets" FunctionName="ControlAireModel.Store.SP_ListaGoogleSheets">
+            <ResultMapping>
+              <ComplexTypeMapping TypeName="ControlAireModel.SP_ListaGoogleSheets_Result">
+                <ScalarProperty Name="id" ColumnName="id" />
+                <ScalarProperty Name="Nombre" ColumnName="Nombre" />
+                <ScalarProperty Name="Censor" ColumnName="Censor" />
+                <ScalarProperty Name="llave" ColumnName="llave" />
+                <ScalarProperty Name="latitud" ColumnName="latitud" />
+                <ScalarProperty Name="longitud" ColumnName="longitud" />
+              </ComplexTypeMapping>
+            </ResultMapping>
+          </FunctionImportMapping>
+          <FunctionImportMapping FunctionImportName="SP_ListaGoogleSheetsAdmin" FunctionName="ControlAireModel.Store.SP_ListaGoogleSheetsAdmin">
+            <ResultMapping>
+              <ComplexTypeMapping TypeName="ControlAireModel.SP_ListaGoogleSheetsAdmin_Result">
+                <ScalarProperty Name="id" ColumnName="id" />
+                <ScalarProperty Name="Nombre" ColumnName="Nombre" />
+                <ScalarProperty Name="Censor" ColumnName="Censor" />
+                <ScalarProperty Name="llave" ColumnName="llave" />
+              </ComplexTypeMapping>
+            </ResultMapping>
+          </FunctionImportMapping>
+          <FunctionImportMapping FunctionImportName="SP_ListaGoogleSheetsMaster" FunctionName="ControlAireModel.Store.SP_ListaGoogleSheetsMaster">
+            <ResultMapping>
+              <ComplexTypeMapping TypeName="ControlAireModel.SP_ListaGoogleSheetsMaster_Result">
+                <ScalarProperty Name="id" ColumnName="id" />
+                <ScalarProperty Name="Nombre" ColumnName="Nombre" />
+                <ScalarProperty Name="Censor" ColumnName="Censor" />
+                <ScalarProperty Name="llave" ColumnName="llave" />
+                <ScalarProperty Name="Estado" ColumnName="Estado" />
+              </ComplexTypeMapping>
+            </ResultMapping>
+          </FunctionImportMapping>
+          <FunctionImportMapping FunctionImportName="SP_ModificarGoogleSheets" FunctionName="ControlAireModel.Store.SP_ModificarGoogleSheets" />
+          <FunctionImportMapping FunctionImportName="SP_ModificarUsuario" FunctionName="ControlAireModel.Store.SP_ModificarUsuario" />
+          <FunctionImportMapping FunctionImportName="SP_Validar" FunctionName="ControlAireModel.Store.SP_Validar">
+            <ResultMapping>
+              <ComplexTypeMapping TypeName="ControlAireModel.SP_Validar_Result">
+                <ScalarProperty Name="id" ColumnName="id" />
+                <ScalarProperty Name="Nombre" ColumnName="Nombre" />
+                <ScalarProperty Name="Apellidos" ColumnName="Apellidos" />
+                <ScalarProperty Name="Email" ColumnName="Email" />
+                <ScalarProperty Name="Password" ColumnName="Password" />
+                <ScalarProperty Name="Estado" ColumnName="Estado" />
+                <ScalarProperty Name="Rol" ColumnName="Rol" />
+              </ComplexTypeMapping>
+            </ResultMapping>
+          </FunctionImportMapping>
+        </EntityContainerMapping>
+      </Mapping>
+    </edmx:Mappings>
+  </edmx:Runtime>
+  <!-- EF Designer content (DO NOT EDIT MANUALLY BELOW HERE) -->
+  <Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
+    <Connection>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="MetadataArtifactProcessing" Value="EmbedInOutputAssembly" />
+      </DesignerInfoPropertySet>
+    </Connection>
+    <Options>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="ValidateOnBuild" Value="true" />
+        <DesignerProperty Name="EnablePluralization" Value="false" />
+        <DesignerProperty Name="IncludeForeignKeysInModel" Value="true" />
+        <DesignerProperty Name="UseLegacyProvider" Value="false" />
+        <DesignerProperty Name="CodeGenerationStrategy" Value="Ninguno" />
+      </DesignerInfoPropertySet>
+    </Options>
+    <!-- Diagram content (shape and connector positions) -->
+    <Diagrams></Diagrams>
+  </Designer>
+</edmx:Edmx>

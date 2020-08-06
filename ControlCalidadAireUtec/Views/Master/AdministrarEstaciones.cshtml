@@ -1,0 +1,137 @@
+﻿@using PagedList.Mvc;
+@using PagedList;
+
+@model ControlCalidadAireUtec.Models.BD.Sheets
+
+@{
+    /**/
+
+    /**/
+
+    ViewBag.Title = "Administrar Estaciones";
+    Layout = "~/Views/Shared/_LayoutMaster.cshtml";
+}
+
+<h2>Administrar Estaciones</h2>
+<div class="container">
+    <div class="row">
+        <div id="filter-panel" class="collapse filter-panel">
+            <div class="panel panel-default">
+                <div class="panel-body">
+                    @using (Html.BeginForm("AdministrarEstaciones", "Master", FormMethod.Get, new { @class = "form - inline" }))
+                    {
+                        <div class="form-group form-inline">
+                            <label class="filter-col" style="margin-right:0;" for="pref-orderby">Estado:</label>
+                            @Html.DropDownList("estado", ViewData["list"] as SelectList, new { @class = "form-control" })
+                            <label class="filter-col" style="margin-right:0;" for="pref-orderby">Nombre:</label>
+                            @Html.TextBox("nombreestacion", null, new
+                            {
+                                placeholder = "Buscar Estación",
+                                @class = "form-control"
+                            })
+                        </div>
+                        <div class="form-group">
+                            <button type="submit" class="btn btn-default filter-col">
+                                <span class="glyphicon glyphicon-record"></span> Filtrar
+                            </button>
+                        </div>                        
+                    }
+                </div>
+            </div>
+        </div>
+        <button type="button" class="btn btn-primary btn-lg" data-toggle="collapse" data-target="#filter-panel">
+            <span class="glyphicon glyphicon-cog"></span>Filtro
+        </button>
+    </div>
+</div>
+<hr />
+<div class="row">
+    @{
+        foreach (var item in ViewBag.ListaEstaciones as IEnumerable<ControlCalidadAireUtec.Models.BD.SP_ListaGoogleSheetsMaster_Result>)
+        {
+            <div class="col-sm-6 col-md-4">
+                <div class="thumbnail">
+                    <div class="caption">
+                        <h3>@item.Censor</h3>
+                        <p>
+                            <h5>Propietario: @item.Nombre</h5>
+                        </p>
+                        <hr />
+                        <p>
+                            @{
+                                if (item.Estado == 1)
+                                {
+                                    <span class="alert alert-info">Activo</span>
+                                }
+                                else
+                                {
+                                    <span class="alert alert-danger" >Inactivo</span>
+                                }
+                            }
+                        </p>
+                        <hr />
+                        <p>
+                            @Html.ActionLink("Modificar", "ModificarGoogleSheetMaster", new { idsheet = item.id }, htmlAttributes: new { @class = "btn btn-default btn-lg btn-block" })
+                            @Html.ActionLink("Detalle", "DetalleGoogleSheetMaster", new { idsheet = item.id }, htmlAttributes: new { @class = "btn btn-info btn-lg btn-block" })
+                            @{
+                                if (item.Estado != 0)
+                                {
+                                    @Html.ActionLink("Eliminar", "EliminarGoogleSheetMaster", new { idsheet = item.id }, htmlAttributes: new { @class = "btn btn-danger btn-lg btn-block", onclick = "return confirm('¿Esta seguro de eliminar?');" })
+                                }
+                            }
+                        </p>
+                    </div>
+                </div>
+            </div>
+        }
+    }
+</div>
+<hr />
+
+<div style="float: left">
+    Página @(ViewBag.ListaEstaciones.PageCount < ViewBag.ListaEstaciones.PageNumber ? 0 : ViewBag.ListaEstaciones.PageNumber) de @ViewBag.ListaEstaciones.PageCount
+</div>
+<br />
+<div class="justify-content-center">
+    @Html.PagedListPager((IPagedList)ViewBag.ListaEstaciones, paginaEstaciones => Url.Action("AdministrarEstaciones", new { paginaEstaciones }))
+</div>
+<hr />
+@Html.ActionLink("Regresar", "Index", "Master", null, new { @class = "btn btn-default" })
+<link href="~/Content/toastr.css" rel="stylesheet" />
+@section scripts{
+    <script src="~/Scripts/toastr.js"></script>
+    <script>
+        $(function () {
+            toastr.options = {
+                "closeButton": true,
+                "debug": false,
+                "newestOnTop": false,
+                "progressBar": true,
+                "positionClass": "toast-bottom-left",
+                "preventDuplicates": false,
+                "onclick": false,
+                "showDuration": "300",
+                "hideDuration": "1000",
+                "timeOut": "5000",
+                "extendedTimeOut": "1000",
+                "showEasing": "swing",
+                "hideEasing": "linear",
+                "showMethod": "fadeIn",
+                "hideMethod": "fadeOut"
+            }
+            var a = '@TempData["msg"]';
+            if (a == "1") {
+                toastr.success("Estación modificada satifactoriamente", "Información");
+            }
+            if (a == "2") {
+                toastr.error("Sucedio un error", "Error");
+            }
+            if (a=="3") {
+                toastr.success("Estación agregrada satifactoriamente", "Información");
+            }
+            if (a == "4") {
+                toastr.warning("Estación eliminada satifactoriamente","Información")
+            }
+        })
+    </script>
+}

@@ -1,0 +1,151 @@
+﻿@using PagedList.Mvc;
+@using PagedList;
+@{
+    ViewBag.Title = "Administrar Usuarios";
+    Layout = "~/Views/Shared/_LayoutMaster.cshtml";
+}
+
+<h2>Administrar Usuarios</h2>
+<div class="container">
+    <div class="row">
+        <div id="filter-panel" class="collapse filter-panel">
+            <div class="panel panel-default">
+                <div class="panel-body">
+                    @using (Html.BeginForm("AdministrarUsuarios", "Master", FormMethod.Get, new { @class = "form - inline" }))
+                    {
+                        <div class="form-group form-inline">
+                            <label class="filter-col" style="margin-right:0;" for="pref-orderby">Estado:</label>
+                            @Html.DropDownList("estado", ViewData["list"] as SelectList, new { @class = "form-control" })
+                            <label class="filter-col" style="margin-right:0;" for="pref-orderby">Nombre:</label>
+                            @Html.TextBox("nombreusuario", null, new
+                            {
+                                placeholder = "Buscar Usuario",
+                                @class = "form-control btn-group"
+                            })
+                        </div>
+                        <div class="form-group">
+                            <button type="submit" class="btn btn-default filter-col">
+                                <span class="glyphicon glyphicon-record"></span> Filtrar
+                            </button>
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+        <button type="button" class="btn btn-primary btn-lg" data-toggle="collapse" data-target="#filter-panel">
+            <span class="glyphicon glyphicon-cog"></span>Filtro
+        </button>
+    </div>
+</div>
+<hr />
+@Html.ActionLink("Agregar Usuario Administrador", "AgregarAdministrador", "Master", null, new { @class = "btn btn-default btn-lg btn-block" })
+<table class="table table-hover">
+    <thead>
+        <tr>
+            <th scope="col">#</th>
+            <th scope="col">Nombres</th>
+            <th scope="col">Apellidos</th>
+            <th scope="col">Email</th>
+            <th scope="col">Telefono</th>
+            <th scope="col">Estado</th>
+            <th scope="col">Rol</th>
+            <th scope="col">Acciones</th>
+        </tr>
+    </thead>
+    <tbody>
+
+        @{
+            foreach (var item in ViewBag.ListaUsuarios as IEnumerable<ControlCalidadAireUtec.Models.UsuarioEntity>)
+            {
+                <tr>
+                    <th scope="row">@item.id</th>
+                    <td>@item.Nombre</td>
+                    <td>@item.Apellidos</td>
+                    <td>@item.Email</td>
+                    <td>@item.Telefono</td>
+                    <td>
+                        @{
+                            if (item.Estado == 1)
+                            {
+                                <span>Activo</span>
+                            }
+                            else
+                            {
+                                <span>Inactivo</span>
+                            }
+                        }
+                    </td>
+                    <td>
+                        @{
+                            if (item.Rol == 1)
+                            {
+                                <span>Administrador</span>
+                            }
+                            else
+                            {
+                                <span>Master</span>
+                            }
+                        }
+                    </td>
+                    <td>
+                        @Html.ActionLink("Modificar", "ModificarUsuarioMaster", new { idusuario = item.id }, htmlAttributes: new { @class = "btn btn-default" })
+                        @Html.ActionLink("Detalle", "DetalleUsuarioMaster", new { idusuario = item.id }, htmlAttributes: new { @class = "btn btn-info" })
+                        @{
+                            if (item.Estado != 0)
+                            {
+                                @Html.ActionLink("Eliminar", "EliminarUsuarioMaster", new { idusuario = item.id }, htmlAttributes: new { @class = "btn btn-danger", onclick = "return confirm('¿Esta seguro de eliminar?');" })
+                            }
+                        }
+                    </td>
+                </tr>
+            }
+        }
+    </tbody>
+</table>
+<div style="float: left">
+    Página @(ViewBag.ListaUsuarios.PageCount < ViewBag.ListaUsuarios.PageNumber ? 0 : ViewBag.ListaUsuarios.PageNumber) de @ViewBag.ListaUsuarios.PageCount
+</div>
+<br />
+<div class="justify-content-center">
+    @Html.PagedListPager((IPagedList)ViewBag.ListaUsuarios, paginaUsuarios => Url.Action("AdministrarUsuarios", new { paginaUsuarios }))
+</div>
+<hr />
+@Html.ActionLink("Regresar", "Index", "Master", null, new { @class = "btn btn-default" })
+<link href="~/Content/toastr.css" rel="stylesheet" />
+@section scripts{
+    <script src="~/Scripts/toastr.js"></script>
+    <script>
+    $(function () {
+        toastr.options = {
+            "closeButton": true,
+            "debug": false,
+            "newestOnTop": false,
+            "progressBar": true,
+            "positionClass": "toast-bottom-left",
+            "preventDuplicates": false,
+            "onclick": false,
+            "showDuration": "300",
+            "hideDuration": "1000",
+            "timeOut": "5000",
+            "extendedTimeOut": "1000",
+            "showEasing": "swing",
+            "hideEasing": "linear",
+            "showMethod": "fadeIn",
+            "hideMethod": "fadeOut"
+        }
+        var a = '@TempData["msg"]';
+        if (a == "1") {
+            toastr.success("Usuario modificado satifactoriamente", "Información");
+        }
+        if (a == "2") {
+            toastr.error("Sucedio un error", "Error");
+        }
+        if (a=="3") {
+            toastr.success("Usuario agregrado satifactoriamente", "Información");
+        }
+        if (a == "4") {
+            toastr.warning("Usuario eliminado satifactoriamente","Información")
+        }
+    })
+    </script>
+}

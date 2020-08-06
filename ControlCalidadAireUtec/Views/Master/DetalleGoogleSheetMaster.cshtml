@@ -1,0 +1,185 @@
+﻿@using Google.Apis.Sheets.v4;
+@using Google.Apis.Services;
+
+@using ControlCalidadAireUtec.Models;
+
+@model ControlCalidadAireUtec.Models.BD.Sheets
+
+@{
+    ViewBag.Title = "Detalle Estación";
+    Layout = "~/Views/Shared/_LayoutMaster.cshtml";
+}
+
+<h2>Detalle </h2>
+
+<div>
+    <h4>Estaciones de Monitoreo</h4>
+    <hr />
+    <dl class="dl-horizontal">
+        <dt>
+            @Html.DisplayNameFor(model => model.nombre)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.nombre)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.s_key)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.s_key)
+        </dd>
+    </dl>
+</div>
+@{
+    try
+    {
+
+        //optenemos los datos de google sheets
+
+        string[] Scopes = { SheetsService.Scope.SpreadsheetsReadonly };
+        string AplicationName = "Google Sheets API .NET Quickstart";
+        string spredsheetId = Model.s_key;
+        var service = new SheetsService(new BaseClientService.Initializer()
+        {
+            ApplicationName = AplicationName,
+            ApiKey = "AIzaSyCUhw_JcXMHOYVKEIGd4NWQlTZChLZBLA8",
+        });
+        var range = $"datalogger!A4:E";
+        SpreadsheetsResource.ValuesResource.GetRequest request =
+            service.Spreadsheets.Values.Get(spredsheetId, range);
+        var response = request.Execute();
+        IList<IList<Object>> values = response.Values;
+        if (values != null)
+        {
+            //listado para grafica - por el momento lo mostramos en una tabla
+            ViewBag.censor = values.Select(x => new CensoresModel() { id = x[0].ToString(), fecha = x[1].ToString(), pm_2_5 = x[2].ToString(), pm_10 = x[3].ToString(), temp = x[4].ToString() }).OrderByDescending(x => x.id.Length).ThenByDescending(x => x.id).Take(10);
+            //listado para mostrar el ultimo registro para poder mostrarlo en el mapa
+            ViewBag.censorDataMap = values.Select(x => new CensoresModel() { id = x[0].ToString(), fecha = x[1].ToString(), pm_2_5 = x[2].ToString(), pm_10 = x[3].ToString(), temp = x[4].ToString() }).OrderByDescending(x => x.id.Length).ThenByDescending(x => x.id).Take(1);
+        }
+    }
+    catch (Exception ex)
+    {
+
+        <spam>@ex</spam>
+    }
+}
+<div class="text-center">
+    <h2>Ubicación</h2>
+    <div id="mapid" style="width: 100%;height: 300px;"></div>
+    <script type="text/javascript">
+
+    //tomamos la latitud y longitud del modelo
+
+	var mymap = L.map('mapid').setView([@Model.latitud,@Model.longitud], 12);
+    L.tileLayer('https://api.mapbox.com/styles/v1/{id}/tiles/{z}/{x}/{y}?access_token=pk.eyJ1IjoibWFwYm94IiwiYSI6ImNpejY4NXVycTA2emYycXBndHRqcmZ3N3gifQ.rJcFIG214AriISLbB6B5aw', {
+    maxZoom: 18,
+    id: 'mapbox/streets-v11',
+    tileSize: 512,
+    zoomOffset: -1
+        }).addTo(mymap);
+
+    @{
+        //desconponemos los datos para moder colocarlo en el codigo del mapa
+        if (ViewBag.censorDataMap!=null)
+        {
+            foreach (var item in ViewBag.censorDataMap)
+            {
+                ViewBag.fechaCensor = item.fecha;
+                ViewBag.pm_2_5Censor = item.pm_2_5;
+                ViewBag.pm_10Censor = item.pm_10;
+                ViewBag.tempCensor = item.temp;
+            }
+        }
+
+}
+        if (@ViewBag.pm_2_5Censor== 0 || @ViewBag.pm_2_5Censor<0) {
+        L.circle([@Model.latitud, @Model.longitud], {
+        color: 'blue',
+        fillColor: 'blue',
+        fillOpacity: 0.5,
+        radius: 1500
+        }).addTo(mymap).bindPopup("<span class='alert alert-danger'>Estacion de monitoreo caida</span>");
+
+        }
+        if (@ViewBag.pm_2_5Censor> 0 && @ViewBag.pm_2_5Censor< 15.3) {
+        L.circle([@Model.latitud, @Model.longitud], {
+        color: 'green',
+        fillColor: '#24B300',
+        fillOpacity: 0.5,
+        radius: 1500
+        }).addTo(mymap).bindPopup("Calidad: Buena</br>PM 2.5: @ViewBag.pm_2_5Censor (ug/m3)</br>PM 10: @ViewBag.pm_10Censor (ug/m3)</br>Temperatura C°: @ViewBag.tempCensor</br>");
+
+        }
+        if (@ViewBag.pm_2_5Censor> 15.5 && @ViewBag.pm_2_5Censor< 40.2) {
+        L.circle([@Model.latitud, @Model.longitud], {
+        color: 'yellow',
+        fillColor: '#FFCD00',
+        fillOpacity: 0.5,
+        radius: 1500
+        }).addTo(mymap).bindPopup("Calidad: Satifactoria</br>PM 2.5: @ViewBag.pm_2_5Censor (ug/m3)</br>PM 10: @ViewBag.pm_10Censor (ug/m3)</br>Temperatura C°: @ViewBag.tempCensor</br>");
+        }
+        if (@ViewBag.pm_2_5Censor> 45.5 && @ViewBag.pm_2_5Censor< 65.4) {
+        L.circle([@Model.latitud, @Model.longitud], {
+        color: 'orange',
+        fillColor: '#FF4D00',
+        fillOpacity: 0.5,
+        radius: 1500
+        }).addTo(mymap).bindPopup("Calidad: No satifactoria</br>PM 2.5: @ViewBag.pm_2_5Censor (ug/m3)</br>PM 10: @ViewBag.pm_10Censor (ug/m3)</br>Temperatura C°: @ViewBag.tempCensor</br>");
+        }
+        if (@ViewBag.pm_2_5Censor> 66 && @ViewBag.pm_2_5Censor< 159) {
+        L.circle([@Model.latitud, @Model.longitud], {
+        color: 'red',
+        fillColor: '#f03',
+        fillOpacity: 0.5,
+        radius: 1500
+        }).addTo(mymap).bindPopup("Calidad: Dañina</br>PM 2.5: @ViewBag.pm_2_5Censor</br>PM 10: @ViewBag.pm_10Censor (ug/m3)</br>Temperatura C°: @ViewBag.tempCensor</br>");
+        }
+    </script>
+</div>
+<div>
+    <hr />
+    <h2 class="text-center">Ultimos datos proporcionados</h2>
+    <table class="table">
+        <thead>
+            <tr>
+                <th scope="col">#</th>
+                <th scope="col">fecha</th>
+                <th scope="col">pm 2.5</th>
+                <th scope="col">pm 10</th>
+                <th scope="col">Temp C°</th>
+            </tr>
+        </thead>
+        <tbody>
+
+            @{
+                foreach (var item in (IEnumerable<ControlCalidadAireUtec.Models.CensoresModel>)ViewBag.censor)
+                {
+                    <tr>
+                        <th scope="row">@item.id</th>
+                        <td>@item.fecha</td>
+                        <td>@item.pm_2_5</td>
+                        <td>@item.pm_10</td>
+                        <td>@item.temp</td>
+                    </tr>
+                }
+            }
+        </tbody>
+    </table>
+
+    <hr />
+    <h2 class="text-center">Graficos</h2>
+    <div class="text-center">
+        <img class="img-responsive" src='@Url.Action("GraficoPMAdmin", "Administrador",new { idsheet = Model.id })' alt="Grafico de Particulas" />
+        <img class="img-responsive" src='@Url.Action("GraficoPM10Admin", "Administrador",new { idsheet = Model.id })' alt="Grafico de Particulas" />
+    </div>
+    <div class="text-center">
+        <img class="img-responsive" src='@Url.Action("GraficoTempAdmin", "Administrador",new { idsheet = Model.id })' alt="Grafico de Temperatura" />
+    </div>
+</div>
+<p>
+    @Html.ActionLink("Modificar", "ModificarGoogleSheetMaster", new { idsheet = Model.id }, htmlAttributes: new { @class = "btn btn-default" }) |
+    @Html.ActionLink("Regresar", "AdministrarEstaciones", "Master", null, new { @class = "btn btn-primary" })
+</p>

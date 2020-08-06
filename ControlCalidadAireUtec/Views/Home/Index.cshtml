@@ -1,0 +1,109 @@
+﻿@{
+    ViewBag.Title = "Inicio";
+}
+<link href="~/Content/carga.css" rel="stylesheet" />
+<div class="text-center">
+    <img src="~/Content/Images/unnamed.png" width="120" height="120" />
+    <br />
+    <h2>Sistema IoT de monitoreo de calidad del  Aire El Salvador </h2>
+</div>
+<div id="toast-container" class="wrap-loading" style="display:none;">
+    <br />
+    <br />
+    <div class="loading loading-4"></div>
+    <br />
+    <br />
+</div>
+<div id="dataModel"></div>
+@section JavaScript{
+        <script src="~/Scripts/jquery.signalR-2.4.1.min.js"></script>
+        <script src="/signalr/hubs"></script>
+        <script type="text/javascript">
+            $(document).ready(function () {
+                $(document).ajaxStart(function () {
+                    $('#toast-container').show();
+                });
+                $(document).ajaxStop(function () {
+                    $('#toast-container').hide();
+                });
+                $(document).ajaxError(function () {
+                    $('#toast-container').hide();
+                });
+            });
+            $(function () {
+                var hubNotify = $.connection.estacionesHub;
+                $.connection.hub.start().done(function () {
+                    getAll();
+                });
+                hubNotify.client.refreshEstacionesData = function () {
+                    getAll();
+                };
+            });
+            function getAll() {
+                var model = $('#dataModel');
+
+                $.ajax({
+                    url: '/Home/GetEstacionesData',
+                    contentType: 'application/html; charset:utf-8',
+                    type: 'GET',
+                    cache: false,
+                    dataType: 'html',
+                    success: function (result) {
+                        model.empty().append(result);
+                    }
+                });
+
+            }
+        </script>
+    }
+@*<hr />
+
+<h1>Listado de Estaciones mediante Servicio REST</h1>
+
+<table class="table table-hover" id="tablaEstaciones">
+
+    <tr>
+
+        <th>id</th>
+        <th>Nombre</th>
+        <th>Acción</th>
+
+    </tr>
+
+</table>
+
+<h2>Detalle del Cliente seleccionado</h2>
+
+<div id="detalleEstaciones">
+
+
+
+</div>
+@section JavaScript{
+    <script>
+        $(function () {
+            $.getJSON("https://localhost:5001/estaciones",
+                function (data) {
+                    $.each(data, function (key, val) {
+                        var fila = "<tr><td>" + val.id + "</td><td>" + val.nombre + "</td><td><a href='#' onclick='cargarDetalle(event,\"" + val.id + "\");'>Ver Detalle</a></td></tr>";
+                        $(fila).appendTo("#tablaEstaciones");
+                    });
+                }
+            )
+        });
+        function cargarDetalle(event, id) {
+            event.preventDefault();
+            var urldetalle = "https://localhost:5001/estaciones/" + id;
+            $.getJSON(urldetalle, function (data) {
+                var detalle = "<b>ID: </b>" + data.id + "<br/>";
+
+                var detalle = detalle + "<b>Nombre: </b>" + data.Nombre + "<br/>";
+
+                var detalle = detalle + "<b>Llave: </b>" + data.sKey + "<br/>";
+
+                $("#detalleEstaciones").html(detalle);
+            });
+        }
+    </script>
+
+}*@

@@ -1,0 +1,77 @@
+﻿@using Google.Apis.Sheets.v4;
+@using Google.Apis.Services;
+@using ControlCalidadAireUtec.Models;
+@using System.Web.Helpers;
+@using System.Collections;
+
+@model ControlCalidadAireUtec.Models.BD.Sheets
+<div class="container">
+    @{
+        try
+        {
+            //optenemos los datos de google sheets
+
+            string[] Scopes = { SheetsService.Scope.SpreadsheetsReadonly };
+            string AplicationName = "Google Sheets API .NET Quickstart";
+            string spredsheetId = Model.s_key;
+            var service = new SheetsService(new BaseClientService.Initializer()
+            {
+                ApplicationName = AplicationName,
+                ApiKey = "AIzaSyCUhw_JcXMHOYVKEIGd4NWQlTZChLZBLA8",
+            });
+            var range = $"datalogger!A4:E";
+            SpreadsheetsResource.ValuesResource.GetRequest request =
+                service.Spreadsheets.Values.Get(spredsheetId, range);
+            var response = request.Execute();
+            IList<IList<Object>> values = response.Values;
+            if (values != null)
+            {
+                //listado para grafica - por el momento lo mostramos en una tabla
+                var sensor = values.Select(x => new CensoresModel() { id = x[0].ToString(), fecha = x[1].ToString(), pm_2_5 = x[2].ToString(), pm_10 = x[3].ToString(), temp = x[4].ToString() }).OrderByDescending(x => x.id.Length).ThenByDescending(x => x.id).Take(50);
+                var sensor1 = sensor.OrderBy(x => x.id);
+                string temp = @"<Chart>
+                  <ChartAreas>
+                    <ChartArea Name=""Default"" _Template_=""All"">
+                      <AxisY>
+                        <LabelStyle Font=""Verdana, 12px"" />
+                      </AxisY>
+                      <AxisX LineColor=""64, 64, 64, 64"" Interval=""1"">
+                        <LabelStyle Font=""Verdana, 12px"" />
+                      </AxisX>
+                    </ChartArea>
+                  </ChartAreas>
+                </Chart>";
+                Chart chart = new Chart(
+                   width: 1100,
+                   height: 400,
+                   theme: temp);
+                chart.AddTitle("Grafica de comportamiento contaminantes PM 2.5");
+                chart.AddLegend(title: "Categorias", name: null);
+                ArrayList x_value = new ArrayList();
+                ArrayList y_value = new ArrayList();
+                ArrayList y_valuePM10 = new ArrayList();
+                foreach (var item in sensor1)
+                {
+                    x_value.Add(item.fecha);
+                    y_value.Add(item.pm_2_5);
+                    y_valuePM10.Add(item.pm_10);
+                }
+                chart.AddSeries(
+                            name: "pm 10",
+                            chartType: "Area",
+                            xValue: x_value,
+                            yValues: y_value,
+                            xField: "Materia Particulada",
+                            yFields: "Fecha"
+                        );
+               
+
+                chart.Write();
+            }
+        }
+        catch (Exception ex)
+        {
+            <span>@ex</span>
+        }
+    }
+</div>
