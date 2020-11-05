@@ -216,6 +216,12 @@
     <Compile Include="Models\BD\SP_DetalleUsuario_Result.cs">
       <DependentUpon>ControlCalidadModel.tt</DependentUpon>
     </Compile>
+    <Compile Include="Models\BD\sp_helpdiagramdefinition_Result.cs">
+      <DependentUpon>ControlCalidadModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\BD\sp_helpdiagrams_Result.cs">
+      <DependentUpon>ControlCalidadModel.tt</DependentUpon>
+    </Compile>
     <Compile Include="Models\BD\SP_ListaGoogleSheetsAdmin_Result.cs">
       <DependentUpon>ControlCalidadModel.tt</DependentUpon>
     </Compile>
@@ -226,6 +232,9 @@
       <DependentUpon>ControlCalidadModel.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\BD\SP_Validar_Result.cs">
+      <DependentUpon>ControlCalidadModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\BD\sysdiagrams.cs">
       <DependentUpon>ControlCalidadModel.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\BD\Usuarios.cs">
