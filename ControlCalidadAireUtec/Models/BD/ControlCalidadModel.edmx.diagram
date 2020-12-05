@@ -4,9 +4,8 @@
   <edmx:Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
     <!-- Diagram content (shape and connector positions) -->
     <edmx:Diagrams>
-      <Diagram DiagramId="17d062dc603e4b8ab4fd48a33c43d61c" Name="Diagram1">
+      <Diagram DiagramId="c0f0c96d823946a29d744a9fbb7b6452" Name="Diagram1">
         <EntityTypeShape EntityType="ControlAireModel.Sheets" Width="1.5" PointX="3" PointY="1" IsExpanded="true" />
-        <EntityTypeShape EntityType="ControlAireModel.sysdiagrams" Width="1.5" PointX="0.75" PointY="4.75" IsExpanded="true" />
         <EntityTypeShape EntityType="ControlAireModel.Usuarios" Width="1.5" PointX="0.75" PointY="1" IsExpanded="true" />
         <AssociationConnector Association="ControlAireModel.FK__Sheets__idUser__173876EA" ManuallyRouted="false" />
       </Diagram>

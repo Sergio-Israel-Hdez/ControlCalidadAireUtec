@@ -33,7 +33,7 @@
             ApplicationName = AplicationName,
             ApiKey = "AIzaSyCUhw_JcXMHOYVKEIGd4NWQlTZChLZBLA8",
         });
-        var range = $"datalogger!A4:E";
+        var range = $"datalogger!A4:F";
         SpreadsheetsResource.ValuesResource.GetRequest request =
             service.Spreadsheets.Values.Get(spredsheetId, range);
         var response = request.Execute();
