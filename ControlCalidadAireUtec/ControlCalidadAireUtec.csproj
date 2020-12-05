@@ -196,18 +196,18 @@
     <Compile Include="Hubs\EstacionesHub.cs" />
     <Compile Include="Models\AdministradorModel.cs" />
     <Compile Include="Models\BD\ControlCalidadModel.Context.cs">
-      <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
       <DependentUpon>ControlCalidadModel.Context.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\BD\ControlCalidadModel.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
       <DependentUpon>ControlCalidadModel.tt</DependentUpon>
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
     </Compile>
     <Compile Include="Models\BD\ControlCalidadModel.Designer.cs">
-      <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
       <DependentUpon>ControlCalidadModel.edmx</DependentUpon>
     </Compile>
     <Compile Include="Models\BD\Sheets.cs">
@@ -268,10 +268,13 @@
       <DependentUpon>ControlCalidadModel.edmx</DependentUpon>
       <LastGenOutput>ControlCalidadModel.Context.cs</LastGenOutput>
     </Content>
+    <Content Include="Models\BD\ControlCalidadModel.edmx.diagram">
+      <DependentUpon>ControlCalidadModel.edmx</DependentUpon>
+    </Content>
     <Content Include="Models\BD\ControlCalidadModel.tt">
       <Generator>TextTemplatingFileGenerator</Generator>
-      <DependentUpon>ControlCalidadModel.edmx</DependentUpon>
       <LastGenOutput>ControlCalidadModel.cs</LastGenOutput>
+      <DependentUpon>ControlCalidadModel.edmx</DependentUpon>
     </Content>
     <Content Include="Scripts\bootstrap.js" />
     <Content Include="Scripts\bootstrap.min.js" />
@@ -281,9 +284,6 @@
       <Generator>EntityModelCodeGenerator</Generator>
       <LastGenOutput>ControlCalidadModel.Designer.cs</LastGenOutput>
     </EntityDeploy>
-    <Content Include="Models\BD\ControlCalidadModel.edmx.diagram">
-      <DependentUpon>ControlCalidadModel.edmx</DependentUpon>
-    </Content>
     <None Include="Properties\PublishProfiles\ControlCalidadAireUtec - Web Deploy.pubxml" />
     <None Include="Scripts\jquery-2.2.3.intellisense.js" />
     <Content Include="Scripts\jquery-2.2.3.js" />

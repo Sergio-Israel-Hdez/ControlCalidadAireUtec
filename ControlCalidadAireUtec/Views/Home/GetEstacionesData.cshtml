@@ -33,7 +33,7 @@
             ApplicationName = AplicationName,
             ApiKey = "AIzaSyCUhw_JcXMHOYVKEIGd4NWQlTZChLZBLA8",
         });
-        var range = $"datalogger!A4:E";
+        var range = $"datalogger!A4:F";
         SpreadsheetsResource.ValuesResource.GetRequest request =
             service.Spreadsheets.Values.Get(spredsheetId, range);
         var response = request.Execute();
@@ -60,7 +60,7 @@
                     @:fillColor: 'blue',
                     @:fillOpacity: 0.5,
                     @:radius: 5000
-                    @:}).addTo(mymap).bindPopup("<span class='alert alert-danger'>Estacion @row.nombre caida</span>");
+                    @:}).addTo(mymap).bindPopup("<span class='alert alert-danger'>Estacion @row.nombre caida</span></br><a href='/Home/DetalleSensor?idsheet=@row.id' class='btn btn-default text-success'>Detalle</a>");
 
             }
             if (pm_2_5 > 0 && pm_2_5 < 15.3)
